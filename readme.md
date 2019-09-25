@@ -1,6 +1,10 @@
 
 分课笔记请见： `doc/`
 
+正在努力更新中......
+
+> 你的star是作者最好的动力...谢谢
+
 # webpack4.0
 ## 第一课
 ### 1. 什么是webpack
@@ -707,7 +711,52 @@ module.exports = {
 > 2. 需要`new`多个`HtmlWebpackPlugin`这个插件实例，其中指定`chunks`
 > 3. `chunks`即时要打包的入口文件中的js文件
 
-### 配置 source-map
+### 2. 配置 source-map(源码映射)
+> 源码映射的作用是会单独生成一个souce-map文件，出错了会标识当前报错的列和行（文件源码）
+1. `souce-map` 直接在`webpack.config.js`中使用
+```js
+module.exports = {
+    ...,
+    devtool: 'source-map' // 增加映射文件 可以帮我们调试源代码
+}
+```
+2. `eval-source-map` 用法同上
+> 不会产生单独的文件 但是可以显示行和列
+```js
+module.exports = {
+    ...,
+    devtool: 'eval-source-map' // 增加映射文件 可以帮我们调试源代码
+}
+```
+3. `cheap-module-source-map` 用法同上
+> 不会产生列 但是是一个单独的映射文件，只是可以保存下来
+4. `cheap-module-eval-source-map` 用法同上
+> 不会产生文件，集成在打包后的文件中（也不会产生列）
+
+ ### 3. watch属性
+ ```js
+module.exports = {
+    ...,
+    watch: true,
+    watchOptions: { // 监控的选项
+        poll: 1000, // 每秒 问我 1000次 需要更新吗？比较合理的是1000...
+        aggregateTimeout: 500, // 防抖的作用 我一直输入代码后 500ms 内是不重新打包的。
+        ignored: /node_modules/ // 不需要进行监控哪个文件
+    },
+}
+ ```
+ > 把webpack变成了 webpack-dev-server 相当于就是实时动态打包编译
+ 
+ 
 
 ## 第十课
+> webpack的小插件
+### cleanWebpackPlugin
+> 每次build之前都先把dist文件目录下删干净
+1. 
 
+
+### copyWebpackPlugin
+
+
+### bannerPlugin(内置)
