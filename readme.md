@@ -711,6 +711,9 @@ module.exports = {
 > 2. 需要`new`多个`HtmlWebpackPlugin`这个插件实例，其中指定`chunks`
 > 3. `chunks`即时要打包的入口文件中的js文件
 
+
+> 详情请见`2.webpack其他配置/histroy/webpack.config.1....js`
+
 ### 2. 配置 source-map(源码映射)
 > 源码映射的作用是会单独生成一个souce-map文件，出错了会标识当前报错的列和行（文件源码）
 1. `souce-map` 直接在`webpack.config.js`中使用
@@ -733,6 +736,8 @@ module.exports = {
 4. `cheap-module-eval-source-map` 用法同上
 > 不会产生文件，集成在打包后的文件中（也不会产生列）
 
+> 详情请见`2.webpack其他配置/histroy/webpack.config.2....js`
+
  ### 3. watch属性
  ```js
 module.exports = {
@@ -746,6 +751,8 @@ module.exports = {
 }
  ```
  > 把webpack变成了 webpack-dev-server 相当于就是实时动态打包编译
+
+> 详情请见`2.webpack其他配置/histroy/webpack.config.3....js`
  
  
 
@@ -753,10 +760,63 @@ module.exports = {
 > webpack的小插件
 ### cleanWebpackPlugin
 > 每次build之前都先把dist文件目录下删干净
-1. 
-
-
+1. 安装插件
+`yarn add clean-webpack-plugin -D`
+2. 在`webpack.config.js`中使用
+```js
+let {CleanWebpackPlugin} = require('clean-webpack-plugin');
+module.exports = {
+    ...,
+    plugins: [
+        new CleanWebpackPlugin() // 啥都不用传
+    ]
+}
+```
 ### copyWebpackPlugin
+> 把其他的一些目录的文件拷贝到dist目录下
+1. 安装
+`yarn add copy-webpack-plugin -D`
+2. 使用 
+```js
+let CopyWebpackPlugin = require('clean-webpack-plugin');
+module.exports = {
+    ...,
+    plugins: [
+        new CopyWebpackPlugin([
+            {from: './public', to: './dist'}
+        ]) // 传入要清空的路径
+    ]
+}
+```
 
 
 ### bannerPlugin(内置)
+> 功能：在每个js文件中插入版权声明（其实就是在前面加上一段注释...)
+1. 安装
+> 不用安装，webpack内置的插件
+2. 使用
+```js
+let webpack = require('webpack');
+
+module.exports = {
+    ...,
+    plugins: [
+        new webpack.BannerPlugin('make 2019 by lzm') // 插入版权声明
+    ]
+}
+```
+
+> 详情请见`2.webapck其他配置/history/webpack.config.4.3个小插件.js`
+
+
+
+## 第十一课
+### 跨域问题
+
+
+
+## 第十二课
+
+
+
+## 第十三课
