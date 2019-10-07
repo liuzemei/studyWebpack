@@ -30,4 +30,15 @@
 
 // 第十二课. resolve属性问题
 
-import 'bootstrap';
+// import 'bootstrap';
+
+// import './style';
+
+
+// 第十三课  定义环境变量
+
+let url = '';
+// 开发环境和生产环境采用不一样的变量时，需要插入一个变量 
+url = DEV ? 'http://localhost:3000' : 'http://www.liuzemei.com'
+
+console.log(url);

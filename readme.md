@@ -847,6 +847,7 @@ module.exports = {
 }
 ```
 #### 3.模拟数据
+原理是其实`dev-server`本身就是基于`express`环境
 ```js
 module.exports = {
     ..., 
@@ -872,7 +873,7 @@ const middle = require('webpack-dev-middleware');
 const config = require('./webpack.config.js'); // 指向 webpack配置文件
 const compiler = webpack(config);
 
-app.use(middle(compiler));
+app.use(middle(compiler)); // 使用中间件，运行服务时，同时启动webpack
 app.get('/user', (req,res) => {
     res.json({name: 'LZM1'})
 })
@@ -882,7 +883,108 @@ app.listen(3000);
 `node server.js`
 
 ## 第十二课
+### resolve属性的配置
+#### 1. `node_modules`模块的查找
+默认情况下， `commonjs`寻找第三方模块，是向上遍历目录树找`node_modules`。
+```js
+module.exports = {
+    ...,
+    resolve: {
+        // 在 common 规范中 会遍历上层路径找 node_modules
+        modules: [path.resolve('node_modules')] // 不去上级目录找了，只在当前目录找node_modules
+    }
+}
+```
+#### 2. 别名的引入。
+`commonjs`寻找到第三方模块时，默认会执行以下操作：
+1. 先找到`package.json`文件
+2. 在`package.json`文件中，找到`main`字段，并解析值路径的文件
 
+> 别名的引入可以让`commonjs`寻找到第三方模块的时候，加载指定文件
+```js
+module.exports = {
+    ...,
+    resolve: {
+        alias: { // 别名 
+            bootstrap: 'bootstrap/dist/css/bootstrap.css'
+            // 在 项目中 import 'bootstrap' --> 相当于 import了后面一长串,即，不会去找package.json中main的路径了，而是直接找到后边的一长串指定的路径。
+        }
+    }
+}
+```
+
+#### 3. 修改默认的优先级
+>如果嫌别名的引入还是太麻烦了。可以修改默认的优先级。不过也有条件，需要`package.json`文件中有相应的模块加载路径.
+
+如`bootstrap`中的package.json中，有如下字段:
+```json
+{
+  "style": "dist/css/bootstrap.css",
+  "sass": "scss/bootstrap.scss",
+  "main": "dist/js/bootstrap"
+}
+```
+上文已经提到，默认是加载`main`模块，现在，我们可以修改这个优先级，达到当你`import 'bootstrap'`的时候，优先加载`style`模块，以达到跟上文别名一样的效果
+```js
+module.exports = {
+    ...,
+    resolve: {
+        mainFields: ['style', 'main'] // 找到package.json文件后，先找style模块，如果没有的话，就找main模块
+    }
+}
+```
+
+#### 4. 指定入口文件的名字
+> 如果没有指定，即`package.json`中，没有`main`模块，则默认加载`index.js`
+不过几乎没有应用场景
+```js
+module.exports = {
+    ...,
+    resolve: {
+        mainFiles: ['index.js']
+    }
+}
+```
+#### 5. 设置默认引入后缀名
+> 当引入自己的模块，不加后缀的时候，默认会识别成`js`文件。如果是其他类型的文件，则会报错。
+所以，我们希望能够直接引入文件，而自动的匹配上后缀名。
+```js
+module.exports = {
+    ...,
+    resolve: {
+        extensions: ['.vue', '.js', '.css'] // 当没有后缀名的时候，优先匹配vue 然后匹配 js  最后匹配css
+    }
+}
+```
 
 
 ## 第十三课
+### 定义环境变量
+
+
+## 第十四课
+
+
+## 第十五课
+
+
+## 第十六课
+
+
+## 第十七课
+
+
+## 第十八课
+
+
+## 第十九课
+
+
+## 第二十课
+
+
+## 第二十一课
+
+
+
+## 第二十二课
