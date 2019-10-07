@@ -812,8 +812,74 @@ module.exports = {
 
 ## 第十一课
 ### 跨域问题
+> 解决跨域问题的几种思路
+> 1. 通过配置客户端`webpack`来进行代理转发。
+> 2. 通过把客户端和服务器启动到同一服务器同一端口来进行避免跨域操作。
+> 3. 通过配置服务端来进行跨域()
 
+#### 1. 客户端`webpakck`配置
+> 前提要用例如`express`的服务端框架来启动一个服务。本文中启动服务监听端口为3000
+```js
+module.exports = {
+    ..., 
+    devServer: {
+        proxy: {
+            '/api': 'http://localhost:3000' // 凡是以请求/api开头的，都用代理服务器转发
+        }
+    }
+}
+```
 
+#### 2. `webpack`的高级配置
+```js
+module.exports = {
+    ..., 
+    devServer: {
+        proxy: {// 重写的方式 把请求代理到express服务器上
+            '/api': {
+                target: 'http://localhost:3000',
+                pathRewrite: {
+                    '/api': '' // 把/api替换成空
+                }
+            }
+        }
+    }
+}
+```
+#### 3.模拟数据
+```js
+module.exports = {
+    ..., 
+    devServer: {
+        before(app) { // 提供的方法 钩子
+            app.get('/api/user', (req,res) => {
+                res.json({name: 'LZM-before'})
+            })
+        }
+    }
+}
+```
+
+#### 4. 服务端启用中间件 前后端公用一个端口
+1. 安装 中间件
+`yarn add webpack-dev-middleware -D`
+2. 在`webapck.config.js`同级目录下新建一个 `server.js` 文件
+```js
+const express  = require('express');
+const app = express();
+const webpack = require('webpack');
+const middle = require('webpack-dev-middleware');
+const config = require('./webpack.config.js'); // 指向 webpack配置文件
+const compiler = webpack(config);
+
+app.use(middle(compiler));
+app.get('/user', (req,res) => {
+    res.json({name: 'LZM1'})
+})
+app.listen(3000);
+```
+3. 启动服务
+`node server.js`
 
 ## 第十二课
 
