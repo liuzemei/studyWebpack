@@ -39,6 +39,8 @@
 
 let url = '';
 // 开发环境和生产环境采用不一样的变量时，需要插入一个变量 
-url = DEV ? 'http://localhost:3000' : 'http://www.liuzemei.com'
+url = DEV === 'dev' ? 'http://localhost:3000' : 'http://www.liuzemei.com'
 
 console.log(url);
+
+console.log(typeof FLAG);

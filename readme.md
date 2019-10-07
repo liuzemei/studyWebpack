@@ -6,6 +6,7 @@
 > 你的star是作者最好的动力...谢谢
 
 # webpack4.0
+# 第一章 基础配置
 ## 第一课
 ### 1. 什么是webpack
 webpack可以看做是模块打包机：它做的事情是，分析你的项目结构，找到JavaScript模块以及其他的一些浏览器不能直接运行的拓展语言（scss，ts等），并将其打包为合适的格式以供浏览器使用。
@@ -555,7 +556,8 @@ require('@babel/polyfill');
 > - post 后面执行的loader
 > 见 `webapck.config.3.js`
 
-## 第七课
+# 第二章 其他配置
+## 第一课
 ### 全局变量的引入(以jquery为例)
 #### 1. 安装
 `yarn add jquery`
@@ -597,7 +599,7 @@ module.exports = {
 ```
 > 详情参见`webpack.config.4.js`
 
-## 第八课
+## 第二课
 ### 1. 在js和css中引入图片文件
 1. 安装
 `yarn add file-loader -D`
@@ -674,7 +676,7 @@ module.exports = {
 }
 ```
 
-## 第九课
+## 第三课
 ### 1. 多页应用
 ```js
 let HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -756,7 +758,7 @@ module.exports = {
  
  
 
-## 第十课
+## 第四课
 > webpack的小插件
 ### cleanWebpackPlugin
 > 每次build之前都先把dist文件目录下删干净
@@ -810,7 +812,7 @@ module.exports = {
 
 
 
-## 第十一课
+## 第五课
 ### 跨域问题
 > 解决跨域问题的几种思路
 > 1. 通过配置客户端`webpack`来进行代理转发。
@@ -882,7 +884,7 @@ app.listen(3000);
 3. 启动服务
 `node server.js`
 
-## 第十二课
+## 第六课
 ### resolve属性的配置
 #### 1. `node_modules`模块的查找
 默认情况下， `commonjs`寻找第三方模块，是向上遍历目录树找`node_modules`。
@@ -958,33 +960,80 @@ module.exports = {
 ```
 
 
-## 第十三课
+## 第七课
 ### 定义环境变量
+```js
+const webpack = require('webpack');
+module.exports = {
+    ...,
+    plugins: [
+        new webpack.DefinePlugin({
+            DEV: "'production'", // 这里直接parse了一层，所以需要两层包住...
+            DEV1: JSON.stringify('production'), // 我们经常这样用，避免上面的写法...
+            FLAG:  'true'// 注意，boolean值 和 数字 ，可以直接用单引号表示，去掉单引号才正确。否则加上双引号就变成了字符串了。
+        })
+    ]
+}
+```
+
+### 区分不同环境
+1. 将`webpack.config.js`更名为`webpack.base.js`
+2. 同级目录下新建两个文件`webpack.prod.js`和`webpack.dev.js`
+3. 安装插件`webpack-merge`
+`yarn add webpack-merge -D`
+4. 编辑`webpack.dev.js`文件
+```js
+const { smart } = require('webpack-merge')
+const base = require('./webpack.base.js')
+module.exports = smart(base, {
+    mode: 'development'
+})
+```
+5. 编辑`webpack.prod.js`文件
+```js
+const { smart } = require('webpack-merge')
+const base = require('./webpack.base.js')
+module.exports = smart(base, {
+    mode: 'production'
+})
+```
+6. 修改`package.json`文件，修改dev 和 build的文件指向
+```json
+{
+    ...,
+    "scripts": {
+        "dev": "webpack-dev-server --config webpack.dev.js",
+        "build": "webpack --config webpack.prod.js"
+    },
+}
+```
+我们就已经完成了`development`和`production`的区分了。
 
 
-## 第十四课
+# 第三章
+## 第一课
 
 
-## 第十五课
+## 第二课
 
 
-## 第十六课
+## 第三课
 
 
-## 第十七课
+## 第四课
 
 
-## 第十八课
+## 第五课
 
 
-## 第十九课
+## 第六课
 
 
-## 第二十课
+## 第七课
 
 
-## 第二十一课
+## 第八课
 
 
 
-## 第二十二课
+## 第九课
