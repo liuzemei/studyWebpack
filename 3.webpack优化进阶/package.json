@@ -1,0 +1,24 @@
+{
+    "name": "3.webpack_optimization_of_advanced",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "dev": "webpack-dev-server",
+        "build": "webpack"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.2",
+        "@babel/preset-env": "^7.6.2",
+        "@babel/preset-react": "^7.0.0",
+        "babel-loader": "^8.0.6",
+        "html-webpack-plugin": "^3.2.0",
+        "webpack": "^4.41.0",
+        "webpack-cli": "^3.3.9",
+        "webpack-dev-server": "^3.8.2"
+    },
+    "dependencies": {
+        "jquery": "^3.4.1",
+        "moment": "^2.24.0"
+    }
+}

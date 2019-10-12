@@ -1012,6 +1012,133 @@ module.exports = smart(base, {
 
 # 第三章
 ## 第一课
+### 先装环境，废话少说直接上
+1. `yarn init -y`
+2. `yarn add webpack webpack-cli html-webpack-plugin @babel/core babel-loader @babel/preset-env @babel/preset-react -D`
+> 注意: 可能会报错
+> `error package.json: Name contains illegal characters`
+> 请查看你的`package.json`文件的`name`字段是否含有中文名...
+3. 新建`webpack.config.js`配置文件
+```js
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+module.exports = {
+    mode: 'development',
+    entry: './src/index.js',
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            '@babel/preset-env',
+                            '@babel/preset-react' // 可以解析react语法
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    output: {
+        filename: './bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            template: './public/index.html'
+        })
+    ]
+}
+```
+4. 安装热更新模块
+`yarn add webpack-dev-server -D`
+5. 完成`package.json`文件的配置
+```json
+{
+    ...,
+    "script": {
+        "dev": "webpack-dev-server",
+        "build": "webpack"
+    }
+}
+```
+
+### noParse模块
+> webpack默认加载一个模块的时候，会去解析这个包里面有没有其他的第三方模块的依赖，如果有的话，就加载，如果没有的话就不加载。
+有一些包，我们自己明明知道确实没有第三方包的依赖，就可以主动让webpack跳过这些包的解析，会缩短编译时间。
+如：jquery这个包就没有第三方包的依赖。我们主动让webpack跳过这个模块的解析。
+> webpack代码如下
+```js
+module.exports = {
+    ...,
+    module: {
+        rules: [...],
+        noParse: /jquery/  // 不去解析jquery中的依赖关系
+    }
+}
+```
+noParse模块加载前：`Time: 2638ms`
+noParse模块加载后：`Time: 2390ms`
+
+### exclude include
+> 我们使用一些loader(js/css/file...)的时候，默认会去遍历所有的文件都执行（包含`node_modules`）这个时候，我们希望打包的时候，不需要对`node_modules`下的文件执行 loader 操作以提高打包速度。
+
+>webpack代码如下：
+```js
+module.exports = {
+    ...,
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: '/node_modules/', // 该目录下的文件不加载loader
+                include: path.resolve('src'),// 只在该目录下加载loader
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-reactd']
+                    }
+                }
+            }
+        ]
+    }
+}
+```
+
+
+### IgnorePlugin
+> 例如，我们引入`moment`这个常用包的时候，入口文件默认就引入了所有的语言包...这个时候，打包后的体积就非常大。所以，我们查看到`moment`入口文件的js的引入方式后，发现是`locale`这个文件的引入，由于我们只想要中文或者某些语种，所以我们要忽略掉 `moment` 的 `locale` 文件夹的引入。然后手动引入中文包，这个时候，就需要用到 `IgnorePlugin` 这个插件了。
+1. 首先我们安装 moment
+`yarn add moment`
+2. 在 `src/index.js` 中引入并使用
+```js
+import moment from 'moment';
+let formNowByDay = moment().endOf('day').fromNow();
+console.log(formNowByDay);
+```
+> 这个时候我们直接打包：大概文件是1.2MB
+3. 修改`webpack.config.js`文件 完成 `IgnorePlugin` 插件的引入
+```js
+import webpack from 'webpack';
+module.exports = {
+    ...,
+    plugins: [
+        ...,
+        new webpack.IgnorePlugin(/\.\/locale/, /moment/)
+    ]
+}
+```
+> 这个时候我们大口：大概文件是800多kb
+4. 手动引入自己所需要的语言。
+```js
+import moment from 'moment';
+import 'moment/locale/zh-cn'; // 手动引入
+moment.locale('zh-cn'); // 手动设置
+let formNowByDay = moment().endOf('day').fromNow();
+console.log(formNowByDay);
+```
 
 
 ## 第二课
